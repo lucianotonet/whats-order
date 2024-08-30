@@ -20,18 +20,20 @@ export const useMainStore = defineStore('main', {
     produtos: [] as Produto[],
   }),
   actions: {
-    async loadClientes() {
+    async loadClientes(term: string = '') {
       const response = await fetch('/clientes.json');
       if (response.ok) {
-        this.clientes = await response.json();
+        const allClientes = await response.json();
+        this.clientes = allClientes.filter((cliente: { razaoSocial: string }) => cliente.razaoSocial.toLowerCase().includes(term.toLowerCase()));
       } else {
         console.warn('Arquivo de clientes não encontrado.');
       }
     },
-    async loadProdutos() {
+    async loadProdutos(term: string = '') {
       const response = await fetch('/produtos.json');
       if (response.ok) {
-        this.produtos = await response.json();
+        const allProdutos = await response.json();
+        this.produtos = allProdutos.filter((produto: { descricao: string }) => produto.descricao.toLowerCase().includes(term.toLowerCase()));
       } else {
         console.warn('Arquivo de produtos não encontrado.');
       }
