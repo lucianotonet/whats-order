@@ -19,7 +19,7 @@
                         <div class="flex flex-col w-full md:w-1/3">
                             <label class="text-xs uppercase opacity-75" for="flexRca">FLEX/RCA</label>
                             <p class="w-full rounded shadow-inner px-2 py-1 bg-gray-200" id="flexRca">{{ flexRca ||
-                                '&nbsp;' }}</p>
+                '&nbsp;' }}</p>
                         </div>
                     </div>
                 </fieldset>
@@ -40,7 +40,7 @@
                         <div class="flex flex-col w-full md:flex-grow">
                             <label class="text-xs uppercase opacity-75" for="razaoSocialCliente">Razão Social</label>
                             <p class="w-full rounded shadow-inner px-2 py-1 bg-gray-200">{{ cliente.razaoSocial ||
-                                '&nbsp;' }}</p>
+                '&nbsp;' }}</p>
                         </div>
                     </div>
                     <dl>
@@ -145,7 +145,7 @@
                                 <div class="flex justify-center items-center gap-4">
                                     <p required class="font-mono w-full text-right" type="text"
                                         name="precoSugeridoUnidade" id="precoSugeridoUnidade" readonly>{{
-                                        formatCurrency(precoSugeridoUnidade) }}</p>
+                formatCurrency(precoSugeridoUnidade) }}</p>
                                     <small class="w-full text-left uppercase opacity-75">Un.</small>
                                 </div>
 
@@ -158,7 +158,7 @@
                                 <div class="flex justify-center items-center gap-4">
                                     <p required class="font-mono w-full text-right" type="text"
                                         name="precoSugeridoTotal" id="precoSugeridoTotal" readonly>{{
-                                        formatCurrency(precoSugeridoTotal) }}</p>
+                formatCurrency(precoSugeridoTotal) }}</p>
                                     <small class="w-full text-left uppercase opacity-75">Total</small>
                                 </div>
 
@@ -173,7 +173,7 @@
                                 <div class="flex justify-center items-center gap-4">
                                     <p required class="font-mono w-full text-right" type="text"
                                         name="precoAutorizadoUnidade" id="precoAutorizadoUnidade" readonly>{{
-                                        formatCurrency(precoAutorizadoUnidade) }}</p>
+                formatCurrency(precoAutorizadoUnidade) }}</p>
                                     <small class="w-full text-left uppercase opacity-75">Un.</small>
                                 </div>
 
@@ -186,12 +186,12 @@
                                 <div class="flex justify-center items-center gap-4">
                                     <p required class="font-mono w-full text-right" type="text"
                                         name="precoAutorizadoTotal" id="precoAutorizadoTotal" readonly>{{
-                                        formatCurrency(precoAutorizadoTotal) }}</p>
+                formatCurrency(precoAutorizadoTotal) }}</p>
                                     <small class="w-full text-left uppercase opacity-75">Total</small>
                                 </div>
                             </div>
                         </div>
-                    </div>                    
+                    </div>
                 </fieldset>
 
                 <button type="submit"
@@ -360,12 +360,12 @@ const formatCurrency = (value) => {
 };
 
 const updateDescontoReais = () => {
-    descontoReais.value = (precoTabletTotal.value * descontoPercentual.value) / 100;
+    descontoReais.value = ((precoTabletTotal.value * descontoPercentual.value) / 100).toFixed(2);
 };
 
 const updateDescontoPercentual = () => {
     if (descontoReais.value > 0) {
-        descontoPercentual.value = (descontoReais.value / precoTabletTotal.value) * 100;
+        descontoPercentual.value = ((descontoReais.value / precoTabletTotal.value) * 100).toFixed(2);
     } else {
         descontoPercentual.value = 0;
     }
@@ -383,18 +383,31 @@ const updatePrecosAutorizados = () => {
 };
 
 const whatsAppMessage = computed(() => {
-    const produtosList = [produto.value.codigo, ...produtosExtras.value].join(' / ');
-    const clientesList = [cliente.value.codigo, ...clientesExtras.value].join(' / ');
+    const formatarLista = (lista) => lista.join(' / ');
+    const formatarValor = (valor) => valor || '-';
+    const formatarPrecoSugerido = () => {
+        const precoUnidade = precoSugeridoUnidade.value || 0;
+        const precoCx = precoSugeridoCx.value || 0;
+        const precoFormatadoUnidade = formatCurrency(precoUnidade);
+        const precoFormatadoCx = formatCurrency(precoCx);
+
+        if (precoFormatadoCx !== precoFormatadoUnidade) {
+            return `${precoFormatadoUnidade} (${precoFormatadoCx})`;
+        }
+
+        return precoFormatadoUnidade;
+    };
+
     let message = `*SOLICITAÇÃO DE OFERTA 🎯*\n\n` +
         `● *RCA*:  ${rca.value ?? '-'}\n` +
-        `● *Preço Autorizado*:  ${precoSugeridoUnidade.value ?? '-'}\n` +
-        `● *Descrição produto*: ${produto.value.descricao ?? '-'}\n` +
-        `● *Código produto*: ${produtosList}\n` +
-        `● *Razão Social cliente*: ${cliente.value.razaoSocial ?? '-'}\n` +
-        `● *Código cliente*: ${clientesList}\n` +
-        `● *Quantidade*:  ${quantidade.value ?? '-'}\n` +
-        `● *Preço Tablet*:  ${precoTabletUnitario.value ?? '-'}\n` +
-        `● *FLEX/RCA*:  ${flexRca.value ?? '-'}`;
+        `● *Preço Autorizado*:  ${formatarPrecoSugerido()}\n` +
+        `● *Descrição produto*: ${formatarValor(produto.value.descricao)}\n` +
+        `● *Código produto*: ${formatarLista([produto.value.codigo, ...produtosExtras.value])}\n` +
+        `● *Razão Social cliente*: ${formatarValor(cliente.value.razaoSocial)}\n` +
+        `● *Código cliente*: ${formatarLista([cliente.value.codigo, ...clientesExtras.value])}\n` +
+        `● *Quantidade*:  ${quantidade.value ?? '-'} x (${produto.value.fracionamento})\n` +
+        `● *Preço Tablet*:  ${formatCurrency(precoTabletUnitario.value)} ${precoAutorizadoAlcione.value ? '(AUT. ' + formatCurrency(precoAutorizadoAlcione.value) + ')' : ''}\n` +
+        `● *FLEX/RCA*:  ${flexRca.value != 0 ? formatCurrency(flexRca.value) : ''}`;
 
     return message;
 });
@@ -439,12 +452,13 @@ const isValid = computed(() => {
         !!produto.value.codigo &&
         !!quantidade.value &&
         !!precoTabletUnitario.value;
-    // !!flexRca.value;
+        // !!flexRca.value;
 });
 
 const sendOrder = () => {
     if (isValid.value) {
-        const link = `https://api.whatsapp.com/send?phone=5554996132844&text=${encodeURIComponent(whatsAppMessage.value)}`;
+        const phone = import.meta.env.MODE === 'development' ? '5554996132844' : '5554999256258';
+        const link = `https://api.whatsapp.com/send?phone=${phone}&text=${encodeURIComponent(whatsAppMessage.value)}`;
         window.open(link, '_new');
     } else {
         alert('Preencha todos os campos');
