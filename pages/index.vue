@@ -1,34 +1,34 @@
 <template>
-    <div class="mx-auto px-2 md:px-24 w-full py-6 md:py-12 flex">
-        <div class="max-w-5xl mx-auto w-2/3">
+    <div class="mx-auto px-4 md:px-24 w-full py-6 md:py-12 flex flex-col">
+        <div class="max-w-5xl mx-auto w-full">
 
-            <div class="flex justify-between items-center mb-12">
-                <h1 class="text-2xl font-black">SOLICITAÇÃO DE OFERTA 🎯 <small>v3.0</small></h1>
+            <div class="flex justify-between items-center mb-6">
+                <h1 class="text-2xl font-black">SOLICITAÇÃO DE OFERTA 🎯 <small class="text-sm">v3.0</small></h1>
             </div>
 
-            <form @submit.prevent="sendOrder" class="grid gap-8">
+            <form @submit.prevent="sendOrder" class="grid gap-6">
                 <fieldset class="fieldset border p-4">
                     <legend class="uppercase px-2 -mx-2">Vendedor</legend>
-                    <div class="flex gap-1.5 flex-row items-end">
-                        <div class="flex flex-col w-2/3">
+                    <div class="flex flex-col md:flex-row gap-4">
+                        <div class="flex flex-col w-full md:w-2/3">
                             <label class="text-xs uppercase opacity-75" for="rca">RCA</label>
                             <input required v-model="rca"
                                 class="w-full rounded shadow-inner border border-black px-2 py-1" type="text" name="rca"
                                 id="rca">
                         </div>
-                        <div class="flex flex-col w-1/3">
+                        <div class="flex flex-col w-full md:w-1/3">
                             <label class="text-xs uppercase opacity-75" for="flexRca">FLEX/RCA</label>
-                            <p class="w-full rounded shadow-inner px-2 py-1 bg-gray-200" id="flexRca">{{ flexRca || '&nbsp;' }}</p>
+                            <p class="w-full rounded shadow-inner px-2 py-1 bg-gray-200" id="flexRca">{{ flexRca ||
+                                '&nbsp;' }}</p>
                         </div>
-
                     </div>
                 </fieldset>
 
                 <fieldset class="fieldset border p-4">
                     <legend class="uppercase px-2 -mx-2">Cliente</legend>
 
-                    <div class="flex gap-1.5 flex-row items-center">
-                        <div class="flex flex-col w-1/6">
+                    <div class="flex flex-col md:flex-row gap-4">
+                        <div class="flex flex-col w-full md:w-1/6">
                             <label class="text-xs uppercase opacity-75" for="codigoCliente">Código</label>
                             <input required v-model="cliente.codigo"
                                 class="rounded shadow-inner border border-black px-2 py-1" type="text"
@@ -37,9 +37,9 @@
                                 <option v-for="cliente in clientes" :key="cliente.codigo" :value="cliente.codigo" />
                             </datalist>
                         </div>
-                        <div class="flex flex-col w-full">
+                        <div class="flex flex-col w-full md:flex-grow">
                             <label class="text-xs uppercase opacity-75" for="razaoSocialCliente">Razão Social</label>
-                            <p class="w-full rounded shadow-inner px-2 py-1 bg-gray-200">{{cliente.razaoSocial ||
+                            <p class="w-full rounded shadow-inner px-2 py-1 bg-gray-200">{{ cliente.razaoSocial ||
                                 '&nbsp;' }}</p>
                         </div>
                     </div>
@@ -57,8 +57,8 @@
                 <fieldset class="fieldset border p-4">
                     <legend class="uppercase px-2 -mx-2">Produto</legend>
 
-                    <div class="flex gap-1.5 flex-row items-center">
-                        <div class="flex flex-col w-2/12">
+                    <div class="flex flex-col md:flex-row gap-4">
+                        <div class="flex flex-col w-full md:w-2/12">
                             <label class="text-xs uppercase opacity-75" for="codigoProduto">Código</label>
                             <input required v-model="produto.codigo"
                                 class="rounded shadow-inner border border-black px-2 py-1" type="text"
@@ -67,37 +67,32 @@
                                 <option v-for="item in produtos" :key="item.codigo" :value="item.codigo" />
                             </datalist>
                         </div>
-                        <div class="flex flex-col w-full flex-grow flex-1">
+                        <div class="flex flex-col w-full md:flex-grow">
                             <label class="text-xs uppercase opacity-75" for="descricaoProduto">Descrição</label>
-                            <p class="w-full rounded shadow-inner px-2 py-1 bg-gray-200 whitespace-nowrap overflow-hidden text-ellipsis">
+                            <p
+                                class="w-full rounded shadow-inner px-2 py-1 bg-gray-200 whitespace-nowrap overflow-hidden text-ellipsis">
                                 {{ produto.descricao || '&nbsp;' }}
                             </p>
                         </div>
-                        <div class="flex flex-col w-2/12">
+                        <div class="flex flex-col w-full md:w-2/12">
                             <label class="text-xs uppercase opacity-75" for="fracionamentoProduto">Fracionamento</label>
                             <p class="w-full rounded shadow-inner px-2 py-1 bg-gray-200">
                                 {{ produto.fracionamento || '&nbsp;' }}
                             </p>
                         </div>
-                        <div class="flex flex-col w-1/12">
+                        <div class="flex flex-col w-full md:w-1/12">
                             <label class="text-xs uppercase opacity-75" for="precoUnitarioProduto">Preço Un.</label>
                             <p id="precoUnitarioProduto" class="w-full rounded shadow-inner px-2 py-1 bg-gray-200">
-                                {{ produto.precoUnitario || '&nbsp;' }}
+                                {{ formatCurrency(produto.precoUnitario) }}
                             </p>
                         </div>
-                        <div class="flex flex-col w-1/12">
+                        <div class="flex flex-col w-full md:w-1/12">
                             <label class="text-xs uppercase opacity-75" for="precoUnitarioCx">Preço Cx.</label>
                             <p id="precoUnitarioCx" class="w-full rounded shadow-inner px-2 py-1 bg-gray-200">
-                                {{ produto.precoCx || '&nbsp;' }}
+                                {{ formatCurrency(produto.precoCx) }}
                             </p>
                         </div>
-                        <div class="flex flex-col w-1/12">
-                            <label class="text-xs uppercase opacity-75 text-red-500" for="precoTotal">Preço Total</label>
-                            <p id="precoTotal" class="w-full rounded shadow-inner px-2 py-1 bg-gray-200">
-                                {{ produto.precoTotal || '&nbsp;' }}
-                            </p>
-                        </div>
-                        <div class="flex flex-col w-1/12">
+                        <div class="flex flex-col w-full md:w-1/12">
                             <label class="text-xs uppercase opacity-75" for="quantidade">Quantidade</label>
                             <input required v-model="quantidade"
                                 class="w-full rounded shadow-inner border border-black px-2 py-1" type="text"
@@ -117,36 +112,86 @@
 
                 <fieldset class="fieldset border p-4">
                     <legend class="uppercase px-2 -mx-2">Oferta</legend>
-                    <div class="flex flex-col gap-1.5 md:flex-row">                        
+                    <div class="flex flex-col gap-4 md:flex-row">
                         <div class="flex flex-col w-full">
-                            <label class="text-xs uppercase opacity-75" for="descontoPercentual">Desconto (% sugerida)</label>
+                            <label class="text-xs uppercase opacity-75" for="descontoPercentual">Desconto %</label>
                             <input required v-model="descontoPercentual"
-                                class="w-full mb-2 rounded shadow-inner border border-black px-2 py-1" type="number" min="0"
+                                class="w-full rounded shadow-inner border border-black px-2 py-1" type="number" min="0"
                                 max="100" step="0.01" name="descontoPercentual" id="descontoPercentual"
                                 @input="updateDescontoReais">
-                            
-                            <label class="text-xs uppercase opacity-75" for="descontoReais">Desconto (R$ sugerido)</label>
-                            <input required v-model="descontoReais" :class="{'border-red-500': descontoReais < 35}"
+                            <span v-if="true" class="text-red-500 text-xs">...</span>
+
+                            <label class="text-xs uppercase opacity-75" for="descontoReais">Desconto R$</label>
+                            <input required v-model="descontoReais" :class="{ 'border-red-500': descontoReais < 35 }"
                                 class="w-full rounded shadow-inner border border-black px-2 py-1" type="number" min="0"
                                 :max="precoTabletTotal" step="0.01" name="descontoReais" id="descontoReais"
                                 @input="updateDescontoPercentual">
                             <span v-if="descontoReais < 35" class="text-red-500 text-xs">O desconto deve ser maior que
                                 R$ 35,00</span>
+                            <span v-else class="text-red-500 text-xs">...</span>
+
+                            <label class="text-xs uppercase opacity-75" for="precoAutorizadoAlcione">Preço Autorizado
+                                (Alcione)</label>
+                            <input v-model="precoAutorizadoAlcione"
+                                :class="{ 'border-red-500': !precoAutorizadoAlcione }"
+                                class="w-full rounded shadow-inner border border-black px-2 py-1" type="number" min="0"
+                                step="0.01" name="precoAutorizadoAlcione" id="precoAutorizadoAlcione"
+                                @input="updatePrecosAutorizados">
+                            <span v-if="true" class="text-red-500 text-xs">...</span>
                         </div>
-                        <div class="flex flex-col w-full">
-                            <label class="text-xs uppercase opacity-75" for="precoSugeridoUnidade">Preço Un. (sugerido)</label>
-                            <p required
-                                class="font-mono w-full mb-2  rounded shadow-inner px-2 py-1 bg-gray-200"
-                                type="text" name="precoSugeridoUnidade" id="precoSugeridoUnidade" readonly>{{
-                                formatCurrency(precoSugeridoUnidade) }}</p>
-                            
-                            <label class="text-xs uppercase opacity-75" for="precoSugeridoCx">Preço Cx. (sugerido)</label>
-                            <p required
-                                class="font-mono w-full rounded shadow-inner px-2 py-1 bg-gray-200"
-                                type="text" name="precoSugeridoCx" id="precoSugeridoCx" readonly>{{
-                                formatCurrency(precoSugeridoCx) }}</p>
+                        <div class="flex w-full md:flex-row gap-4">
+                            <div class="flex flex-col w-full">
+                                <label class="text-xs uppercase opacity-75 text-center">OFERTA</label>
+                                <div class="flex justify-center items-center gap-4">
+                                    <p required class="font-mono w-full text-right" type="text"
+                                        name="precoSugeridoUnidade" id="precoSugeridoUnidade" readonly>{{
+                                        formatCurrency(precoSugeridoUnidade) }}</p>
+                                    <small class="w-full text-left uppercase opacity-75">Un.</small>
+                                </div>
+
+                                <div class="flex justify-center items-center gap-4">
+                                    <p required class="font-mono w-full text-right" type="text" name="precoSugeridoCx"
+                                        id="precoSugeridoCx" readonly>{{ formatCurrency(precoSugeridoCx) }}</p>
+                                    <small class="w-full text-left uppercase opacity-75">Cx.</small>
+                                </div>
+
+                                <div class="flex justify-center items-center gap-4">
+                                    <p required class="font-mono w-full text-right" type="text"
+                                        name="precoSugeridoTotal" id="precoSugeridoTotal" readonly>{{
+                                        formatCurrency(precoSugeridoTotal) }}</p>
+                                    <small class="w-full text-left uppercase opacity-75">Total</small>
+                                </div>
+
+                                <div class="flex justify-center items-center gap-4">
+                                    <p required class="font-mono w-full text-right" type="text" name="flexRca"
+                                        id="flexRca" readonly>{{ formatCurrency(flexRca) }}</p>
+                                    <small class="w-full text-left uppercase opacity-75">FLEX/RCA</small>
+                                </div>
+                            </div>
+                            <div class="flex flex-col w-full">
+                                <label class="text-xs uppercase opacity-75 text-center">AUTORIZADO</label>
+                                <div class="flex justify-center items-center gap-4">
+                                    <p required class="font-mono w-full text-right" type="text"
+                                        name="precoAutorizadoUnidade" id="precoAutorizadoUnidade" readonly>{{
+                                        formatCurrency(precoAutorizadoUnidade) }}</p>
+                                    <small class="w-full text-left uppercase opacity-75">Un.</small>
+                                </div>
+
+                                <div class="flex justify-center items-center gap-4">
+                                    <p required class="font-mono w-full text-right" type="text" name="precoAutorizadoCx"
+                                        id="precoAutorizadoCx" readonly>{{ formatCurrency(precoAutorizadoCx) }}</p>
+                                    <small class="w-full text-left uppercase opacity-75">Cx.</small>
+                                </div>
+
+                                <div class="flex justify-center items-center gap-4">
+                                    <p required class="font-mono w-full text-right" type="text"
+                                        name="precoAutorizadoTotal" id="precoAutorizadoTotal" readonly>{{
+                                        formatCurrency(precoAutorizadoTotal) }}</p>
+                                    <small class="w-full text-left uppercase opacity-75">Total</small>
+                                </div>
+                            </div>
                         </div>
-                    </div>
+                    </div>                    
                 </fieldset>
 
                 <button type="submit"
@@ -154,18 +199,6 @@
                     class="w-full bg-black text-white py-2 px-3 rounded shadow mt-6">Enviar</button>
 
             </form>
-        </div>
-        <div class="w-1/3 p-4 border-l">
-            <h2 class="text-lg font-bold mb-4">Pré-visualização</h2>
-            <div class="bg-[#faf6f4] shadow-md rounded-lg p-4 mb-4">
-                <div class="flex items-start">
-                    <div class="min-w-8 h-8 rounded-full bg-gray-300 mr-2"></div>
-                    <div class="flex flex-col">
-                        <span class="font-bold text-sm">Você</span>
-                        <div class="bg-[#d9fdd3] text-gray-800 p-2 rounded-lg" v-html="previewMessage"></div>
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
 </template>
@@ -185,7 +218,7 @@ const produtosExtras = ref([]);
 const cliente = ref({ codigo: '', razaoSocial: '' });
 const clientesExtras = ref([]);
 const quantidade = ref(1);
-const flexRca = ref('');
+const flexRca = ref(0); // Initialize flexRca to 0
 const produtos = ref([]);
 const clientes = ref([]);
 const precoTabletUnitario = computed(() => {
@@ -206,13 +239,37 @@ const precoTabletCx = computed(() => {
 });
 
 const precoSugeridoUnidade = computed(() => {
-    const descontoUnidade = (precoTabletUnitario.value * descontoPercentual.value) / 100;    
+    const descontoUnidade = (precoTabletUnitario.value * descontoPercentual.value) / 100;
     return (parseFloat(precoTabletUnitario.value) - descontoUnidade).toFixed(4);
 });
 
 const precoSugeridoCx = computed(() => {
-    const descontoCx = (precoTabletCx.value * descontoPercentual.value) / 100;    
+    const descontoCx = (precoTabletCx.value * descontoPercentual.value) / 100;
     return (parseFloat(precoTabletCx.value) - descontoCx).toFixed(4);
+});
+
+const precoSugeridoTotal = computed(() => {
+    if (!precoTabletTotal.value) return null;
+
+    const descontoTotal = (precoTabletTotal.value * descontoPercentual.value) / 100;
+
+    return (parseFloat(precoTabletTotal.value) - descontoTotal).toFixed(4);
+});
+
+const precoAutorizadoAlcione = ref(0);
+const precoAutorizadoUnidade = computed(() => {
+    return precoAutorizadoAlcione.value;
+});
+
+const precoAutorizadoCx = computed(() => {
+    const unidadesPorProduto = parseInt(produto.value.fracionamento.split(/[^0-9]/)[0]) || 1; // Extrai o primeiro inteiro
+    return precoAutorizadoUnidade.value * unidadesPorProduto
+});
+
+// Start of Selection
+const precoAutorizadoTotal = computed(() => {
+    const unidadesPorProduto = parseInt(produto.value.fracionamento.split(/[^0-9]/)[0]) || 1; // Extrai o primeiro inteiro
+    return (precoAutorizadoUnidade.value * unidadesPorProduto * quantidade.value).toFixed(4);
 });
 
 const fetchProdutos = async () => {
@@ -298,6 +355,7 @@ const updateClientesExtras = (novosCodigos) => {
 };
 
 const formatCurrency = (value) => {
+    if (!value || isNaN(value)) value = 0;
     return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
 };
 
@@ -316,6 +374,12 @@ const updateDescontoPercentual = () => {
 const recalculateValues = () => {
     updateDescontoReais();
     updateDescontoPercentual();
+    updatePrecosAutorizados(); // Recalculate flexRca whenever values are recalculated
+};
+
+const updatePrecosAutorizados = () => {
+    const diff = precoAutorizadoTotal.value - precoSugeridoTotal.value
+    flexRca.value = diff > 0 ? diff : 0
 };
 
 const whatsAppMessage = computed(() => {
@@ -375,7 +439,7 @@ const isValid = computed(() => {
         !!produto.value.codigo &&
         !!quantidade.value &&
         !!precoTabletUnitario.value;
-        // !!flexRca.value;
+    // !!flexRca.value;
 });
 
 const sendOrder = () => {
