@@ -20,20 +20,18 @@ export const useMainStore = defineStore('main', {
     produtos: [] as Produto[],
   }),
   actions: {
-    async loadClientes(term: string = '') {
+    async loadClientes() {
       const response = await fetch('/clientes.json');
       if (response.ok) {
-        const allClientes = await response.json();
-        this.clientes = allClientes.filter((cliente: { razaoSocial: string }) => cliente.razaoSocial.toLowerCase().includes(term.toLowerCase()));
+        this.clientes = await response.json();
       } else {
         console.warn('Arquivo de clientes não encontrado.');
       }
     },
-    async loadProdutos(term: string = '') {
+    async loadProdutos() {
       const response = await fetch('/produtos.json');
       if (response.ok) {
-        const allProdutos = await response.json();
-        this.produtos = allProdutos.filter((produto: { descricao: string }) => produto.descricao.toLowerCase().includes(term.toLowerCase()));
+        this.produtos = await response.json();
       } else {
         console.warn('Arquivo de produtos não encontrado.');
       }
@@ -62,6 +60,30 @@ export const useMainStore = defineStore('main', {
         console.error('Erro ao salvar os dados:', error);
       }
     },
+    searchClientes(term: string): Cliente[] {
+      const lowercaseTerm = term.toLowerCase();
+      return this.clientes
+        .filter(cliente => 
+          cliente.codigo.toLowerCase().includes(lowercaseTerm) ||
+          cliente.razaoSocial.toLowerCase().includes(lowercaseTerm)
+        )
+        .slice(0, 10); // Limita o resultado a 10 itens
+    },
+    searchProdutos(term: string): Produto[] {
+      const lowercaseTerm = term.toLowerCase();
+      return this.produtos
+        .filter(produto => 
+          produto.codigo.toLowerCase().includes(lowercaseTerm) ||
+          produto.descricao.toLowerCase().includes(lowercaseTerm)
+        )
+        .slice(0, 10); // Limita o resultado a 10 itens
+    },
+    getClienteByCodigo(codigo: string): Cliente | undefined {
+      return this.clientes.find(cliente => cliente.codigo === codigo);
+    },
+    getProdutoByCodigo(codigo: string): Produto | undefined {
+      return this.produtos.find(produto => produto.codigo === codigo);
+    }
   },
   getters: {
     totalClientes: (state) => state.clientes.length,
