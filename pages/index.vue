@@ -14,13 +14,8 @@
                             <label class="text-xs uppercase opacity-75" for="rca">RCA</label>
                             <input required v-model="rca"
                                 class="w-full rounded shadow-inner border border-black px-2 py-1" type="text" name="rca"
-                                id="rca">
-                        </div>
-                        <div class="flex flex-col w-full md:w-1/3">
-                            <label class="text-xs uppercase opacity-75" for="flexRca">FLEX/RCA</label>
-                            <p class="w-full rounded shadow-inner px-2 py-1 bg-gray-200" id="flexRca">{{ flexRca ||
-                '&nbsp;' }}</p>
-                        </div>
+                                id="rca" @input="recalculateValues">
+                        </div>                        
                     </div>
                 </fieldset>
 
@@ -32,9 +27,9 @@
                             <label class="text-xs uppercase opacity-75" for="codigoCliente">Código</label>
                             <input required v-model="cliente.codigo"
                                 class="rounded shadow-inner border border-black px-2 py-1" type="text"
-                                @input="() => handleClienteInput(cliente.codigo)" list="clienteList">
+                                @input="handleClienteInput(cliente.codigo)">
                             <datalist id="clienteList">
-                                <option v-for="cliente in clientes" :key="cliente.codigo" :value="cliente.codigo" />
+                                <option v-for="cliente in filteredClientes" :key="cliente.codigo" :value="cliente.codigo" />
                             </datalist>
                         </div>
                         <div class="flex flex-col w-full md:flex-grow">
@@ -62,9 +57,9 @@
                             <label class="text-xs uppercase opacity-75" for="codigoProduto">Código</label>
                             <input required v-model="produto.codigo"
                                 class="rounded shadow-inner border border-black px-2 py-1" type="text"
-                                @input="() => handleProdutoInput(produto.codigo)" list="produtoList">
+                                @input="handleProdutoInput(produto.codigo)">
                             <datalist id="produtoList">
-                                <option v-for="item in produtos" :key="item.codigo" :value="item.codigo" />
+                                <option v-for="item in filteredProdutos" :key="item.codigo" :value="item.codigo" />
                             </datalist>
                         </div>
                         <div class="flex flex-col w-full md:flex-grow">
@@ -119,7 +114,7 @@
                                 class="w-full rounded shadow-inner border border-black px-2 py-1" type="number" min="0"
                                 max="100" step="0.01" name="descontoPercentual" id="descontoPercentual"
                                 @input="updateDescontoReais">
-                            <span v-if="true" class="text-red-500 text-xs">...</span>
+                            <span class="text-red-500 text-xs">&nbsp;</span>
 
                             <label class="text-xs uppercase opacity-75" for="descontoReais">Desconto R$</label>
                             <input required v-model="descontoReais" :class="{ 'border-red-500': descontoReais < 35 }"
@@ -128,7 +123,7 @@
                                 @input="updateDescontoPercentual">
                             <span v-if="descontoReais < 35" class="text-red-500 text-xs">O desconto deve ser maior que
                                 R$ 35,00</span>
-                            <span v-else class="text-red-500 text-xs">...</span>
+                            <span v-else class="text-red-500 text-xs">&nbsp;</span>
 
                             <label class="text-xs uppercase opacity-75" for="precoAutorizadoAlcione">Preço Autorizado
                                 (Alcione)</label>
@@ -137,7 +132,7 @@
                                 class="w-full rounded shadow-inner border border-black px-2 py-1" type="number" min="0"
                                 step="0.01" name="precoAutorizadoAlcione" id="precoAutorizadoAlcione"
                                 @input="updatePrecosAutorizados">
-                            <span v-if="true" class="text-red-500 text-xs">...</span>
+                            <span class="text-red-500 text-xs">&nbsp;</span>
                         </div>
                         <div class="flex w-full md:flex-row gap-4">
                             <div class="flex flex-col w-full">
@@ -204,7 +199,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, watch } from 'vue';
 import CodesInput from '~/components/CodesInput.vue';
 import { useMainStore } from '~/stores/main';
 
@@ -218,23 +213,24 @@ const produtosExtras = ref([]);
 const cliente = ref({ codigo: '', razaoSocial: '' });
 const clientesExtras = ref([]);
 const quantidade = ref(1);
-const flexRca = ref(0); // Initialize flexRca to 0
+const flexRca = ref(0);
 const produtos = ref([]);
 const clientes = ref([]);
+const filteredClientes = ref([]);
+const filteredProdutos = ref([]);
+
 const precoTabletUnitario = computed(() => {
     if (!produto.value.precoUnitario) return null;
-
     return parseFloat(produto.value.precoUnitario);
 });
+
 const precoTabletTotal = computed(() => {
     if (!produto.value.precoCx || !quantidade.value) return null;
-
     return (parseFloat(produto.value.precoCx) * parseFloat(quantidade.value)).toFixed(4);
 });
 
 const precoTabletCx = computed(() => {
     if (!produto.value.precoCx) return null;
-
     return parseFloat(produto.value.precoCx).toFixed(4);
 });
 
@@ -250,9 +246,7 @@ const precoSugeridoCx = computed(() => {
 
 const precoSugeridoTotal = computed(() => {
     if (!precoTabletTotal.value) return null;
-
     const descontoTotal = (precoTabletTotal.value * descontoPercentual.value) / 100;
-
     return (parseFloat(precoTabletTotal.value) - descontoTotal).toFixed(4);
 });
 
@@ -262,13 +256,12 @@ const precoAutorizadoUnidade = computed(() => {
 });
 
 const precoAutorizadoCx = computed(() => {
-    const unidadesPorProduto = parseInt(produto.value.fracionamento.split(/[^0-9]/)[0]) || 1; // Extrai o primeiro inteiro
-    return precoAutorizadoUnidade.value * unidadesPorProduto
+    const unidadesPorProduto = parseInt(produto.value.fracionamento.split(/[^0-9]/)[0]) || 1;
+    return precoAutorizadoUnidade.value * unidadesPorProduto;
 });
 
-// Start of Selection
 const precoAutorizadoTotal = computed(() => {
-    const unidadesPorProduto = parseInt(produto.value.fracionamento.split(/[^0-9]/)[0]) || 1; // Extrai o primeiro inteiro
+    const unidadesPorProduto = parseInt(produto.value.fracionamento.split(/[^0-9]/)[0]) || 1;
     return (precoAutorizadoUnidade.value * unidadesPorProduto * quantidade.value).toFixed(4);
 });
 
@@ -324,7 +317,9 @@ const updateProduto = () => {
         produto.value.precoUnitario = '';
         produto.value.precoCx = '';
     }
+    updateFlexRca();
 };
+
 const updateDescricaoCliente = () => {
     const clienteEncontrado = clientes.value.find(p => p.codigo.toString() === cliente.value.codigo);
     if (clienteEncontrado) {
@@ -332,26 +327,37 @@ const updateDescricaoCliente = () => {
     } else {
         cliente.value.razaoSocial = '';
     }
+    updateFlexRca();
 };
 
 const handleClienteInput = async (codigo) => {
     cliente.value.codigo = codigo;
-    await getCliente(codigo);
+    if (codigo.length > 2) {
+        filteredClientes.value = await getCliente(codigo);
+    } else {
+        filteredClientes.value = [];
+    }
     updateDescricaoCliente();
 };
 
 const handleProdutoInput = async (codigo) => {
     produto.value.codigo = codigo;
-    await getProduto(codigo);
+    if (codigo.length > 2) {
+        filteredProdutos.value = await getProduto(codigo);
+    } else {
+        filteredProdutos.value = [];
+    }
     updateProduto();
 };
 
 const updateProdutosExtras = (novosCodigos) => {
     produtosExtras.value = novosCodigos;
+    updateFlexRca();
 };
 
 const updateClientesExtras = (novosCodigos) => {
     clientesExtras.value = novosCodigos;
+    updateFlexRca();
 };
 
 const formatCurrency = (value) => {
@@ -361,6 +367,7 @@ const formatCurrency = (value) => {
 
 const updateDescontoReais = () => {
     descontoReais.value = ((precoTabletTotal.value * descontoPercentual.value) / 100).toFixed(2);
+    updateFlexRca();
 };
 
 const updateDescontoPercentual = () => {
@@ -369,18 +376,25 @@ const updateDescontoPercentual = () => {
     } else {
         descontoPercentual.value = 0;
     }
+    updateFlexRca();
 };
 
 const recalculateValues = () => {
-    updateDescontoReais();
-    updateDescontoPercentual();
-    updatePrecosAutorizados(); // Recalculate flexRca whenever values are recalculated
+    updatePrecosAutorizados();
+    updateFlexRca();
 };
 
 const updatePrecosAutorizados = () => {
-    const diff = precoAutorizadoTotal.value - precoSugeridoTotal.value
-    flexRca.value = diff > 0 ? diff : 0
+    updateFlexRca();
 };
+
+const updateFlexRca = () => {
+    const diff = precoAutorizadoTotal.value - precoSugeridoTotal.value;
+    flexRca.value = diff > 0 ? diff : 0;
+};
+
+// Observadores para atualizar FLEX/RCA quando os valores relevantes mudarem
+watch([rca, descontoPercentual, descontoReais, produto, quantidade, precoAutorizadoAlcione], updateFlexRca);
 
 const whatsAppMessage = computed(() => {
     const formatarLista = (lista) => lista.join(' / ');
@@ -412,39 +426,6 @@ const whatsAppMessage = computed(() => {
     return message;
 });
 
-const previewMessage = computed(() => {
-    const formatarLista = (lista) => lista.join(' / ');
-    const formatarValor = (valor) => valor || '-';
-    const formatarPrecoSugerido = () => {
-        const precoUnidade = precoSugeridoUnidade.value || 0;
-        const precoCx = precoSugeridoCx.value || 0;
-        const precoFormatadoUnidade = formatCurrency(precoUnidade);
-        const precoFormatadoCx = formatCurrency(precoCx);
-
-        if (precoFormatadoCx !== precoFormatadoUnidade) {
-            return `${precoFormatadoUnidade} (${precoFormatadoCx})`;
-        }
-
-        return precoFormatadoUnidade;
-    };
-
-    const campos = [
-        { label: 'RCA', valor: formatarValor(rca.value) },
-        { label: 'Preço Autorizado', valor: formatarPrecoSugerido() },
-        { label: 'Descrição produto', valor: formatarValor(produto.value.descricao) },
-        { label: 'Código produto', valor: formatarLista([produto.value.codigo, ...produtosExtras.value]) },
-        { label: 'Razão Social cliente', valor: formatarValor(cliente.value.razaoSocial) },
-        { label: 'Código cliente', valor: formatarLista([cliente.value.codigo, ...clientesExtras.value]) },
-        { label: 'Quantidade', valor: `${quantidade.value} x (${produto.value.fracionamento})` },
-        { label: 'Preço Tablet', valor: formatCurrency(precoTabletUnitario.value) },
-        { label: 'FLEX/RCA', valor: formatarValor(flexRca.value) }
-    ];
-
-    const mensagemFormatada = campos.map(({ label, valor }) => `● <strong>${label}</strong>: ${valor}`).join('<br>');
-
-    return `<strong>SOLICITAÇÃO DE OFERTA 🎯</strong><br><br>${mensagemFormatada}`;
-});
-
 const isValid = computed(() => {
     return !!rca.value &&
         !!precoSugeridoUnidade.value &&
@@ -452,7 +433,6 @@ const isValid = computed(() => {
         !!produto.value.codigo &&
         !!quantidade.value &&
         !!precoTabletUnitario.value;
-        // !!flexRca.value;
 });
 
 const sendOrder = () => {
