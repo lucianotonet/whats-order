@@ -18,7 +18,7 @@ export default defineNuxtConfig({
   hooks: {
     'build:before': () => {
       console.log('Gerando informações de versão...');
-      execSync('node scripts/generate-version.ts');
+      execSync('node scripts/generate-version.js');
     },
   },
 })

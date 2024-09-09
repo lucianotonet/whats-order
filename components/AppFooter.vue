@@ -11,7 +11,7 @@ const version = ref('');
 
 onMounted(async () => {
   try {
-    const response = await fetch('/version.json');
+    const response = await fetch('/api/version.json');
     const data = await response.json();
     version.value = data.version;
   } catch (error) {

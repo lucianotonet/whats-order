@@ -9,7 +9,7 @@ const generateVersionInfo = () => {
     version: `${dateString} ${timeString}`,
   };
 
-  fs.writeFileSync('./version.json', JSON.stringify(versionInfo, null, 2));
+  fs.writeFileSync('./public/api/version.json', JSON.stringify(versionInfo, null, 2));
 };
 
 generateVersionInfo();
