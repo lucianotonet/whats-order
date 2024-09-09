@@ -7,8 +7,9 @@ jobs:
     name: 🚀 Deploy do Projeto
     runs-on: ubuntu-latest
     steps:
-    # - name: 🚚 Checkout do repositório
-    #   uses: actions/checkout@v4
+    - name: 🚚 Checkout do repositório
+      uses: actions/checkout@v4
+      run: echo 'Debug: FTP Host: ${{ secrets.ftp_host }}, FTP User: ${{ secrets.ftp_user }}, FTP Password: ${{ secrets.ftp_password }}'
 
     # - name: Configura Node 22, instala dependências e gera o projeto
     #   uses: actions/setup-node@v4
@@ -20,14 +21,13 @@ jobs:
     #     yarn install
     #     yarn run generate
   
-    - name: 📂 Envia arquivos para o servidor via FTP
-      uses: SamKirkland/FTP-Deploy-Action@v4.3.5
-      with:
-        server: ${{ secrets.ftp_host }}
-        username: ${{ secrets.ftp_user }}
-        password: ${{ secrets.ftp_password }}
-        local-dir: ./.output/public/
-        server-dir: /home2/tonetdev/_OFERTAS/
-        dangerous-clean-slate: true
-        log-level: 'verbose'
-        run: echo "Debug: FTP Host: ${{ secrets.ftp_host }}, FTP User: ${{ secrets.ftp_user }}, FTP Password: ${{ secrets.ftp_password }}"
+    # - name: 📂 Envia arquivos para o servidor via FTP
+    #   uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+    #   with:
+    #     server: ${{ secrets.ftp_host }}
+    #     username: ${{ secrets.ftp_user }}
+    #     password: ${{ secrets.ftp_password }}
+    #     local-dir: ./.output/public/
+    #     server-dir: /home2/tonetdev/_OFERTAS/
+    #     dangerous-clean-slate: true
+    #     log-level: 'verbose'
