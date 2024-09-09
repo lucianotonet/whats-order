@@ -20,6 +20,8 @@ export const useMainStore = defineStore('main', {
     produtos: [] as Produto[],
     loadingClientes: false,
     loadingProdutos: false,
+    loadingUploadClientes: false, // Estado de loading para upload de clientes
+    loadingUploadProdutos: false, // Estado de loading para upload de produtos
   }),
   actions: {
     async loadClientes() {
@@ -53,12 +55,16 @@ export const useMainStore = defineStore('main', {
       }
     },
     async setClientes(clientes: Cliente[]) {
+      this.loadingUploadClientes = true; // Inicia o loading para upload de clientes
       this.clientes = clientes;
       await this.saveDataToServer('clientes', clientes);
+      this.loadingUploadClientes = false; // Finaliza o loading para upload de clientes
     },
     async setProdutos(produtos: Produto[]) {
+      this.loadingUploadProdutos = true; // Inicia o loading para upload de produtos
       this.produtos = produtos;
       await this.saveDataToServer('produtos', produtos);
+      this.loadingUploadProdutos = false; // Finaliza o loading para upload de produtos
     },
     async saveDataToServer(type: string, data: any) {
       try {

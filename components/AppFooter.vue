@@ -1,6 +1,6 @@
 <template>
-  <footer class="text-center text-xs text-gray-500 py-2">
-    <p>Versão: {{ version }}</p>
+  <footer class="text-center text-xs text-gray-500 py-2 mt-4">
+    <small>Versão: {{ version }}</small>
   </footer>
 </template>
 

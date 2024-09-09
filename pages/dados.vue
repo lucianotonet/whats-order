@@ -98,7 +98,7 @@ import * as XLSX from 'xlsx';
 const message = ref('');
 const success = ref(false);
 const loadingConversion = ref(false);
-const loadingUpload = ref(false);
+const loadingUpload = computed(() => store.loadingUploadClientes || store.loadingUploadProdutos);
 const store = useMainStore();
 const clientesInputFile = ref(null);
 const produtosInputFile = ref(null);
@@ -155,12 +155,10 @@ const handleFileUpload = async (type) => {
     }
 
     loadingConversion.value = false;
-    loadingUpload.value = true;
 
     const totalItems = processedData.length;
-    message.value = `Dados de ${type} processados com sucesso.<br/>Total de ${type}: ${totalItems}.`;
+    message.value = `${totalItems} ${type} convertidos com sucesso.`;
     success.value = true;
-    loadingUpload.value = false;
 
     // Limpar os inputs após o upload
     clientesInputFile.value = null;
