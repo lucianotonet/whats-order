@@ -14,14 +14,23 @@
         </div>
         <p v-if="message" :class="{ 'text-green-600 bg-green-400/5': success, 'text-red-600 bg-red-400/5': !success }"
             class="text-center mb-4 text-md p-4 rounded-md" v-html="message"></p>
-        <div v-if="loading"
+        <div v-if="loadingConversion"
             class="loader items-center flex justify-center flex-row gap-2 text-center mb-4 text-md p-4 bg-orange-400/5 rounded-md">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                 stroke="currentColor" class="size-4 animate animate-spin">
                 <path stroke-linecap="round" stroke-linejoin="round"
                     d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
             </svg>
-            Carregando...
+            Convertendo...
+        </div>
+        <div v-if="loadingUpload"
+            class="loader items-center flex justify-center flex-row gap-2 text-center mb-4 text-md p-4 bg-orange-400/5 rounded-md">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                stroke="currentColor" class="size-4 animate animate-spin">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
+            </svg>
+            Enviando...
         </div>
         <!-- Informações rápidas -->
         <div class="bg-gray-100 p-4 rounded-lg mb-8 flex flex-col gap-2">
@@ -49,7 +58,7 @@
                             class="mt-1 border border-gray-300 rounded-md p-1.5 w-full transition duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500"
                             ref="clientesInputFile" />
                     </label>
-                    <button @click="() => handleFileUpload('clientes')" :disabled="!clientesInputFile?.value || loading"
+                    <button @click="() => handleFileUpload('clientes')" :disabled="!clientesInputFile?.value || loadingUpload"
                         class="cursor-pointer border items-center py-2 px-4 rounded-md shadow h-12 bg-black text-white flex gap-2 ">
                         Enviar
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -66,7 +75,7 @@
                             class="mt-1 border border-gray-300 rounded-md p-1.5 w-full transition duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500"
                             ref="produtosInputFile" />
                     </label>
-                    <button @click="() => handleFileUpload('produtos')" :disabled="!produtosInputFile?.value || loading"
+                    <button @click="() => handleFileUpload('produtos')" :disabled="!produtosInputFile?.value || loadingUpload"
                         class="cursor-pointer border items-center py-2 px-4 rounded-md shadow h-12 bg-black text-white flex gap-2 ">
                         Enviar
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -88,7 +97,8 @@ import * as XLSX from 'xlsx';
 
 const message = ref('');
 const success = ref(false);
-const loading = ref(false);
+const loadingConversion = ref(false);
+const loadingUpload = ref(false);
 const store = useMainStore();
 const clientesInputFile = ref(null);
 const produtosInputFile = ref(null);
@@ -117,7 +127,7 @@ const handleFileUpload = async (type) => {
     file = file.files[0]
     if (!file) return;
 
-    loading.value = true;
+    loadingConversion.value = true;
 
     let previousData = type === 'clientes' ? [...store.clientes] : [...store.produtos];
     let processedData = [];
@@ -144,10 +154,13 @@ const handleFileUpload = async (type) => {
         store.setProdutos(processedData);
     }
 
+    loadingConversion.value = false;
+    loadingUpload.value = true;
+
     const totalItems = processedData.length;
     message.value = `Dados de ${type} processados com sucesso.<br/>Total de ${type}: ${totalItems}.`;
     success.value = true;
-    loading.value = false;
+    loadingUpload.value = false;
 
     // Limpar os inputs após o upload
     clientesInputFile.value = null;
