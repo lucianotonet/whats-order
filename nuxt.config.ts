@@ -1,3 +1,5 @@
+import { execSync } from 'child_process';
+
 export default defineNuxtConfig({
   compatibilityDate: '2024-04-03',
   devtools: { enabled: false },
@@ -13,4 +15,10 @@ export default defineNuxtConfig({
     }
   },
   modules: ['@pinia/nuxt', '@nuxtjs/tailwindcss', 'shadcn-nuxt'],
+  hooks: {
+    'build:before': () => {
+      console.log('Gerando informações de versão...');
+      execSync('node scripts/generate-version.ts');
+    },
+  },
 })

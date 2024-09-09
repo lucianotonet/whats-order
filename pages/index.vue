@@ -1,5 +1,5 @@
 <template>
-    <div class="mx-auto px-4 md:px-24 w-full py-6 md:py-12 flex flex-col">
+    <div class="mx-auto px-4 md:px-24 w-full py-6 md:py-12 flex flex-col min-h-screen">
         <div class="max-w-5xl mx-auto w-full">
 
             <div class="flex justify-between items-center mb-6">
@@ -195,6 +195,7 @@
 
             </form>
         </div>
+        <AppFooter />
     </div>
 </template>
 
@@ -202,6 +203,7 @@
 import { ref, computed, onMounted, watch } from 'vue';
 import CodesInput from '~/components/CodesInput.vue';
 import { useMainStore } from '~/stores/main';
+import AppFooter from '~/components/AppFooter.vue';
 
 const store = useMainStore();
 
