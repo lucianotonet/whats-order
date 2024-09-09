@@ -3,11 +3,12 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "nuxt build",
     "dev": "nuxt dev",
-    "generate": "nuxt generate",
+    "build": "yarn changelog && nuxt build",
+    "generate": "yarn changelog && nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
+    "postinstall": "nuxt prepare",
+    "changelog": "bash CHANGELOG_GEN.sh"
   },
   "dependencies": {
     "@nuxtjs/tailwindcss": "^6.12.1",
