@@ -46,14 +46,15 @@ export const useMainStore = defineStore('main', {
     },
     async saveDataToServer(type: string, data: any) {
       try {
-        const response = await fetch('/api/upload', {
+        const response = await fetch('/upload.php', { // Alterado para o script PHP
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json',
+            'Content-Type': 'application/x-www-form-urlencoded',
           },
-          body: JSON.stringify({ type, data }),
+          body: new URLSearchParams({ type, data: JSON.stringify(data) }), // Enviando os dados
         });
-        if (!response.ok) {
+        const result = await response.json();
+        if (!result.success) {
           throw new Error('Falha ao salvar os dados no servidor');
         }
       } catch (error) {
