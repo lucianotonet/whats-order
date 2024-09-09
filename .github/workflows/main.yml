@@ -7,34 +7,26 @@ jobs:
     name: 🚀 Deploy do Projeto
     runs-on: ubuntu-latest
     steps:
-    - name: 🔍 Debug
-      run: |
-        echo 'Debug: FTP Host: ${{ secrets.ftp_host }}' >> debug.log
-        echo 'Debug: FTP User: ${{ secrets.ftp_user }}' >> debug.log
-        echo 'Debug: FTP Password: ${{ secrets.ftp_password }}' >> debug.log
-        cat debug.log
-        rm debug.log
+    - name: 🚚 Checkout do repositório
+      uses: actions/checkout@v4
 
-    # - name: 🚚 Checkout do repositório
-    #   uses: actions/checkout@v4
-
-    # - name: Configura Node 22, instala dependências e gera o projeto
-    #   uses: actions/setup-node@v4
-    #   with:
-    #     node-version: '22'
+    - name: Configura Node 22, instala dependências e gera o projeto
+      uses: actions/setup-node@v4
+      with:
+        node-version: '22'
       
-    # - name: 🔨 Build Project
-    #   run: |
-    #     yarn install
-    #     yarn run generate
+    - name: 🔨 Build Project
+      run: |
+        yarn install
+        yarn run generate
   
-    # - name: 📂 Envia arquivos para o servidor via FTP
-    #   uses: SamKirkland/FTP-Deploy-Action@v4.3.5
-    #   with:
-    #     server: ${{ secrets.ftp_host }}
-    #     username: ${{ secrets.ftp_user }}
-    #     password: ${{ secrets.ftp_password }}
-    #     local-dir: ./.output/public/
-    #     server-dir: /home2/tonetdev/_OFERTAS/
-    #     dangerous-clean-slate: true
-    #     log-level: 'verbose'
+    - name: 📂 Envia arquivos para o servidor via FTP
+      uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+      with:
+        server: ${{ secrets.ftp_host }}
+        username: ${{ secrets.ftp_user }}
+        password: ${{ secrets.ftp_password }}
+        local-dir: ./.output/public/
+        server-dir: /
+        dangerous-clean-slate: true
+        log-level: 'verbose'
