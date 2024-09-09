@@ -26,7 +26,8 @@ echo "# Changelog" > "$TEMP_FILE"
 get_commits() {
     curl -s "${GITHUB_API}/repos/${REPO_OWNER}/${REPO_NAME}/commits" | \
     jq -r '.[] | "
-_[" + (.commit.author.date | split("T")[0] | split("-") | reverse | join("/")) + "](https://github.com/'${REPO_OWNER}'/'${REPO_NAME}'/commits/" + .sha + ")_
+
+_[" + (.commit.author.date | split("T")[0] | split("-") | reverse | join("/")) + " " + (.commit.author.date | split("T")[1] | split("Z")[0]) + "](https://github.com/'${REPO_OWNER}'/'${REPO_NAME}'/commits/" + .sha + ")_
 ### " + .commit.message + "
 "'
 }
