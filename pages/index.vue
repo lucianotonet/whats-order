@@ -3,7 +3,7 @@
         <div class="max-w-5xl mx-auto w-full">
 
             <div class="flex justify-between items-center mb-6">
-                <h1 class="text-2xl font-black">SOLICITAÇÃO DE OFERTA 🎯 <small class="text-sm">v3.0</small></h1>
+                <h1 class="text-2xl font-black">SOLICITAÇÃO DE OFERTA 🎯</h1>
             </div>
 
             <form @submit.prevent="sendOrder" class="grid gap-6">
