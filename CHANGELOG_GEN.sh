@@ -33,7 +33,7 @@ _[%ad](%H)_
 
 # Atualiza o arquivo Changelog com o temporário
 if mv "$TEMP_FILE" "$CHANGELOG_FILE"; then
-    if ! cp "$CHANGELOG_FILE" "/public/$CHANGELOG_FILE"; then
+    if ! cp "$CHANGELOG_FILE" "./public/$CHANGELOG_FILE"; then
         echo "Error: Falha ao copiar $CHANGELOG_FILE para /public/."
         exit 1
     fi
