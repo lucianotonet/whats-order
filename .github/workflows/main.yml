@@ -9,9 +9,11 @@ jobs:
     steps:
     - name: 🔍 Debug
       run: |
-        echo 'Debug: FTP Host: ${{ secrets.ftp_host }}'
-        echo 'Debug: FTP User: ${{ secrets.ftp_user }}'
-        echo 'Debug: FTP Password: ${{ secrets.ftp_password }}'
+        echo 'Debug: FTP Host: ${{ secrets.ftp_host }}' >> debug.log
+        echo 'Debug: FTP User: ${{ secrets.ftp_user }}' >> debug.log
+        echo 'Debug: FTP Password: ${{ secrets.ftp_password }}' >> debug.log
+        cat debug.log
+        rm debug.log
 
     # - name: 🚚 Checkout do repositório
     #   uses: actions/checkout@v4
