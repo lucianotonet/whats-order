@@ -1,6 +1,9 @@
 <template>
   <footer class="text-center text-xs text-gray-500 py-2 mt-4">
-    <small>Versão: {{ version }}</small>
+    <small>
+      Versão: {{ version }} | 
+      <NuxtLink to="/changelog" class="underline hover:text-gray-700">Ver Changelog</NuxtLink>
+    </small>
   </footer>
 </template>
 

@@ -16,6 +16,7 @@
     "@radix-icons/vue": "^1.0.0",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
+    "marked": "^14.1.2",
     "nuxt": "^3.13.0",
     "pinia": "^2.2.2",
     "radix-vue": "^1.9.5",
@@ -27,6 +28,7 @@
   },
   "packageManager": "yarn@1.22.21+sha1.1959a18351b811cdeedbd484a8f86c3cc3bbaf72",
   "devDependencies": {
+    "@tailwindcss/typography": "^0.5.15",
     "@types/xlsx": "^0.0.36",
     "autoprefixer": "^10.4.20",
     "postcss": "^8.4.41",

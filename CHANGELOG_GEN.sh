@@ -33,5 +33,6 @@ _[%ad](%H)_
 
 # Replace the Changelog file with the temporary one
 mv "$TEMP_FILE" "$CHANGELOG_FILE"
+cp "$CHANGELOG_FILE" "/public/$CHANGELOG_FILE"
 
 echo "Changelog atualizado com sucesso!"
