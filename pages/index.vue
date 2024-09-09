@@ -266,7 +266,7 @@ const precoAutorizadoTotal = computed(() => {
 });
 
 const fetchProdutos = async () => {
-    const response = await fetch('/produtos.json');
+    const response = await fetch('/api/produtos.json');
     if (response.ok) {
         const allProdutos = await response.json();
         produtos.value = allProdutos;
@@ -276,7 +276,7 @@ const fetchProdutos = async () => {
 }
 
 const fetchClientes = async () => {
-    const response = await fetch('/clientes.json');
+    const response = await fetch('/api/clientes.json');
     if (response.ok) {
         const allClientes = await response.json();
         clientes.value = allClientes;
