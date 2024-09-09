@@ -68,7 +68,7 @@ export const useMainStore = defineStore('main', {
     },
     async saveDataToServer(type: string, data: any) {
       try {
-        const response = await fetch('/api/index.php', { // Alterado para o script PHP
+        const response = await fetch('/api', { // Alterado para o script PHP
           method: 'POST',
           headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
@@ -85,7 +85,7 @@ export const useMainStore = defineStore('main', {
     },
     async deleteData(type: string) { // Novo método para exclusão
       try {
-        const response = await fetch('/api/index.php', {
+        const response = await fetch('/api', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/x-www-form-urlencoded',

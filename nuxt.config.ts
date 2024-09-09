@@ -21,4 +21,17 @@ export default defineNuxtConfig({
       execSync('node scripts/generate-version.js');
     },
   },
+  nitro: {
+    devProxy: {
+      '/api': {
+        target: 'http://localhost:8000/api',
+        changeOrigin: true,
+      },
+    },
+  },
+  runtimeConfig: {
+    public: {
+      apiBase: process.env.NODE_ENV === 'production' ? '' : '/api',
+    },
+  },
 })

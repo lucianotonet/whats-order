@@ -1,12 +1,12 @@
 <template>
-    <div class="mx-auto px-4 md:px-24 w-full py-6 md:py-12 flex flex-col min-h-screen">
-        <div class="max-w-5xl mx-auto w-full">
+    <div class="mx-auto w-full py-4 flex flex-col min-h-screen">
+        <div class="flex flex-col max-w-5xl mx-auto w-full gap-10">
 
-            <div class="flex justify-between items-center mb-6">
-                <h1 class="text-2xl font-black">SOLICITAÇÃO DE OFERTA 🎯</h1>
+            <div class="flex justify-between items-center mb-6 w-full text-center md:text-left border-b pb-4">
+                <h1 class="text-2xl font-black w-full">SOLICITAÇÃO DE OFERTA</h1>
             </div>
 
-            <form @submit.prevent="sendOrder" class="grid gap-6">
+            <form @submit.prevent="sendOrder" class="grid gap-10">
                 <fieldset class="fieldset border p-4">
                     <legend class="uppercase px-2 -mx-2">Vendedor</legend>
                     <div class="flex flex-col md:flex-row gap-4">
@@ -14,8 +14,8 @@
                             <label class="text-xs uppercase opacity-75" for="rca">RCA</label>
                             <input required v-model="rca"
                                 class="w-full rounded shadow-inner border border-black px-2 py-1" type="text" name="rca"
-                                id="rca" @input="recalculateValues">
-                        </div>                        
+                                id="rca">
+                        </div>
                     </div>
                 </fieldset>
 
@@ -29,7 +29,8 @@
                                 class="rounded shadow-inner border border-black px-2 py-1" type="text"
                                 @input="handleClienteInput(cliente.codigo)">
                             <datalist id="clienteList">
-                                <option v-for="cliente in filteredClientes" :key="cliente.codigo" :value="cliente.codigo" />
+                                <option v-for="cliente in filteredClientes" :key="cliente.codigo"
+                                    :value="cliente.codigo" />
                             </datalist>
                         </div>
                         <div class="flex flex-col w-full md:flex-grow">
@@ -107,40 +108,100 @@
 
                 <fieldset class="fieldset border p-4">
                     <legend class="uppercase px-2 -mx-2">Oferta</legend>
-                    <div class="flex flex-col gap-4 md:flex-row">
-                        <div class="flex flex-col w-full">
-                            <label class="text-xs uppercase opacity-75" for="descontoPercentual">Desconto %</label>
-                            <input required v-model="descontoPercentual"
-                                class="w-full rounded shadow-inner border border-black px-2 py-1" type="number" min="0"
-                                max="100" step="0.01" name="descontoPercentual" id="descontoPercentual"
-                                @input="updateDescontoReais">
-                            <span class="text-red-500 text-xs">&nbsp;</span>
 
-                            <label class="text-xs uppercase opacity-75" for="descontoReais">Desconto R$</label>
-                            <input required v-model="descontoReais" :class="{ 'border-red-500': descontoReais < 35 }"
-                                class="w-full rounded shadow-inner border border-black px-2 py-1" type="number" min="0"
-                                :max="precoTabletTotal" step="0.01" name="descontoReais" id="descontoReais"
-                                @input="updateDescontoPercentual">
-                            <span v-if="descontoReais < 35" class="text-red-500 text-xs">O desconto deve ser maior que
-                                R$ 35,00</span>
-                            <span v-else class="text-red-500 text-xs">&nbsp;</span>
-
-                            <label class="text-xs uppercase opacity-75" for="precoAutorizadoAlcione">Preço Autorizado
-                                (Alcione)</label>
-                            <input v-model="precoAutorizadoAlcione"
-                                :class="{ 'border-red-500': !precoAutorizadoAlcione }"
-                                class="w-full rounded shadow-inner border border-black px-2 py-1" type="number" min="0"
-                                step="0.01" name="precoAutorizadoAlcione" id="precoAutorizadoAlcione"
-                                @input="updatePrecosAutorizados">
-                            <span class="text-red-500 text-xs">&nbsp;</span>
+                    <div class="flex flex-col md:flex-row gap-4">
+                        <div class="flex flex-col w-full md:w-auto">
+                            <label class="text-xs uppercase opacity-75 text-right md:text-left"
+                                for="ofertaDescontoPercentual">Desconto
+                                %</label>
+                            <input required v-model="ofertaDescontoPercentual"
+                                class="w-full md:min-w-32 rounded shadow-inner border text-right border-black px-1 py-1"
+                                type="number" min="0" max="100" step="0.01" name="ofertaDescontoPercentual"
+                                id="ofertaDescontoPercentual" @input="updateOfertaPrecoUnitario">
                         </div>
+
+                        <div
+                            class="flex flex-col items-center justify-end w-full md:flex-row md:w-auto md:mt-4 text-xs uppercase opacity-75">
+                            ou</div>
+
+                        <div class="flex flex-col w-full md:w-auto">
+                            <label class="text-xs uppercase opacity-75 text-right md:text-left"
+                                for="ofertaPrecoUnitario">Preço
+                                unitário</label>
+                            <input v-model="ofertaPrecoUnitario"
+                                class="rounded shadow-inner text-right w-full md:min-w-32 border border-black px-1 py-1"
+                                id="ofertaPrecoUnitario" name="ofertaPrecoUnitario" type="number" min="0" step="0.01"
+                                @input="updateOfertaDescontoPercentual">
+                        </div>
+
+                        <div
+                            class="flex flex-col items-center justify-end w-full md:flex-row md:w-auto md:mt-4 text-xs uppercase opacity-75">
+                            =</div>
+
+                        <div class="flex flex-col w-auto md:w-auto">
+
+                            <label class="text-xs uppercase opacity-75 text-right md:text-left"
+                                for="ofertaDescontoReais">Desconto R$</label>
+
+                            <div class="flex flex-1 flex-col md:flex-row items-center justify-end">
+
+                                <p :class="{ 'text-red-500 border-red-500': ofertaDescontoReais < 35 }"
+                                    class="w-full md:min-w-32 border text-right rounded shadow-inner px-2 py-1 bg-gray-200">
+                                    {{
+                formatCurrency(ofertaDescontoReais)
+            }}</p>
+
+                                <small v-if="ofertaDescontoReais < 35"
+                                    class="text-red-500 text-xs text-left md:ml-4 mb-1">⚠️
+                                    O
+                                    desconto deve
+                                    ser maior que R$ 35,00</small>
+                            </div>
+
+
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col md:flex-row gap-2 border-t pt-2 mt-6">
+                        <div class="flex flex-col w-full md:w-1/2">
+                            <div class="flex items-center my-2">
+                                <input type="checkbox" id="liberadoAlcione" v-model="isLiberadoAlcione" class="mr-2">
+                                <label for="liberadoAlcione"
+                                    class="text-xs uppercase opacity-75 text-right md:text-left">Há valor liberado por
+                                    Alcione?</label>
+                            </div>
+
+                            <input v-if="isLiberadoAlcione" v-model="precoAutorizadoAlcione"
+                                :class="{ 'border-red-500': !precoAutorizadoAlcione }"
+                                class="w-full md:min-w-64 text-right rounded shadow-inner border border-black px-2 py-1"
+                                type="number" min="0" step="0.01" name="precoAutorizadoAlcione"
+                                id="precoAutorizadoAlcione" @input="updatePrecosAutorizados">
+                        </div>
+
+                        <div v-if="isLiberadoAlcione && flexRca > 0" class="flex flex-col w-full md:w-1/2">
+
+                            <label class="text-xs uppercase opacity-75 text-right md:text-left mt-4"
+                                for="flexRca">FLEX/RCA</label>
+
+                            <div class="flex flex-grow flex-col md:flex-row items-center justify-end">
+                                <p class="w-full md:min-w-32 text-right rounded shadow-inner px-2 py-1 bg-gray-200">{{
+                formatCurrency(flexRca)
+            }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+
+                <fieldset class="fieldset border p-4" v-show="false">
+                    <legend class="uppercase px-2 -mx-2">DEBUG</legend>
+                    <div class="flex flex-col gap-4 md:flex-row">
                         <div class="flex w-full md:flex-row gap-4">
                             <div class="flex flex-col w-full">
                                 <label class="text-xs uppercase opacity-75 text-center">OFERTA</label>
                                 <div class="flex justify-center items-center gap-4">
                                     <p required class="font-mono w-full text-right" type="text"
-                                        name="precoSugeridoUnidade" id="precoSugeridoUnidade" readonly>{{
-                formatCurrency(precoSugeridoUnidade) }}</p>
+                                        name="ofertaPrecoUnitario" id="ofertaPrecoUnitario" readonly>{{
+                formatCurrency(ofertaPrecoUnitario) }}</p>
                                     <small class="w-full text-left uppercase opacity-75">Un.</small>
                                 </div>
 
@@ -151,9 +212,9 @@
                                 </div>
 
                                 <div class="flex justify-center items-center gap-4">
-                                    <p required class="font-mono w-full text-right" type="text"
-                                        name="precoSugeridoTotal" id="precoSugeridoTotal" readonly>{{
-                formatCurrency(precoSugeridoTotal) }}</p>
+                                    <p required class="font-mono w-full text-right" type="text" name="ofertaPrecoTotal"
+                                        id="ofertaPrecoTotal" readonly>{{
+                formatCurrency(ofertaPrecoTotal) }}</p>
                                     <small class="w-full text-left uppercase opacity-75">Total</small>
                                 </div>
 
@@ -162,8 +223,20 @@
                                         id="flexRca" readonly>{{ formatCurrency(flexRca) }}</p>
                                     <small class="w-full text-left uppercase opacity-75">FLEX/RCA</small>
                                 </div>
+
+                                <div class="flex justify-center items-center gap-4 mt-2">
+                                    <p required class="font-mono w-full text-right" type="text"
+                                        name="ofertaDescontoReais" id="ofertaDescontoReais" readonly
+                                        :class="{ 'text-red-500': ofertaDescontoReais < 35 }">
+                                        {{ formatCurrency(ofertaDescontoReais) }}
+                                    </p>
+                                    <small class="w-full text-left uppercase opacity-75">Desconto R$</small>
+                                </div>
+                                <span v-if="ofertaDescontoReais < 35" class="text-red-500 text-xs text-right">O desconto
+                                    deve
+                                    ser maior que R$ 35,00</span>
                             </div>
-                            <div class="flex flex-col w-full">
+                            <div v-if="isLiberadoAlcione" class="flex flex-col w-full">
                                 <label class="text-xs uppercase opacity-75 text-center">AUTORIZADO</label>
                                 <div class="flex justify-center items-center gap-4">
                                     <p required class="font-mono w-full text-right" type="text"
@@ -181,7 +254,7 @@
                                 <div class="flex justify-center items-center gap-4">
                                     <p required class="font-mono w-full text-right" type="text"
                                         name="precoAutorizadoTotal" id="precoAutorizadoTotal" readonly>{{
-                formatCurrency(precoAutorizadoTotal) }}</p>
+                                        formatCurrency(precoAutorizadoTotal) }}</p>
                                     <small class="w-full text-left uppercase opacity-75">Total</small>
                                 </div>
                             </div>
@@ -189,13 +262,17 @@
                     </div>
                 </fieldset>
 
-                <button type="submit"
-                    :class="{ 'opacity-20 disabled cursor-not-allowed': !isValid, 'opacity-100': !!isValid }"
-                    class="w-full bg-black text-white py-2 px-3 rounded shadow mt-6">Enviar</button>
+                <div class="px-4 md:px-0">
+                    <button type="submit"
+                        :class="{ 'opacity-20 disabled cursor-not-allowed': !isValid, 'opacity-100': !!isValid }"
+                        class="w-full bg-black text-white py-2 px-3 rounded shadow mt-6 uppercase">Enviar
+                        oferta</button>
 
+                </div>
             </form>
+            
+            <AppFooter />
         </div>
-        <AppFooter />
     </div>
 </template>
 
@@ -208,8 +285,10 @@ import AppFooter from '~/components/AppFooter.vue';
 const store = useMainStore();
 
 const rca = ref(null);
-const descontoPercentual = ref(0);
-const descontoReais = ref(0);
+const ofertaDescontoPercentual = ref(0);
+const ofertaPrecoUnitario = ref(0);
+const ofertaDescontoReais = ref(0);
+
 const produto = ref({ codigo: '', descricao: '', precoTotal: '', precoUnitario: '', precoCx: '', fracionamento: '' });
 const produtosExtras = ref([]);
 const cliente = ref({ codigo: '', razaoSocial: '' });
@@ -220,6 +299,7 @@ const produtos = ref([]);
 const clientes = ref([]);
 const filteredClientes = ref([]);
 const filteredProdutos = ref([]);
+const isLiberadoAlcione = ref(false);
 
 const precoTabletUnitario = computed(() => {
     if (!produto.value.precoUnitario) return null;
@@ -236,23 +316,18 @@ const precoTabletCx = computed(() => {
     return parseFloat(produto.value.precoCx).toFixed(4);
 });
 
-const precoSugeridoUnidade = computed(() => {
-    const descontoUnidade = (precoTabletUnitario.value * descontoPercentual.value) / 100;
-    return (parseFloat(precoTabletUnitario.value) - descontoUnidade).toFixed(4);
-});
-
 const precoSugeridoCx = computed(() => {
-    const descontoCx = (precoTabletCx.value * descontoPercentual.value) / 100;
+    const descontoCx = (precoTabletCx.value * ofertaDescontoPercentual.value) / 100;
     return (parseFloat(precoTabletCx.value) - descontoCx).toFixed(4);
 });
 
-const precoSugeridoTotal = computed(() => {
+const ofertaPrecoTotal = computed(() => {
     if (!precoTabletTotal.value) return null;
-    const descontoTotal = (precoTabletTotal.value * descontoPercentual.value) / 100;
+    const descontoTotal = (precoTabletTotal.value * ofertaDescontoPercentual.value) / 100;
     return (parseFloat(precoTabletTotal.value) - descontoTotal).toFixed(4);
 });
 
-const precoAutorizadoAlcione = ref(0);
+const precoAutorizadoAlcione = ref(isLiberadoAlcione.value ? 0 : null); // Set to zero or null based on isLiberadoAlcione
 const precoAutorizadoUnidade = computed(() => {
     return precoAutorizadoAlcione.value;
 });
@@ -266,6 +341,11 @@ const precoAutorizadoTotal = computed(() => {
     const unidadesPorProduto = parseInt(produto.value.fracionamento.split(/[^0-9]/)[0]) || 1;
     return (precoAutorizadoUnidade.value * unidadesPorProduto * quantidade.value).toFixed(4);
 });
+
+const recalculateValues = () => {
+    updateFlexRca();
+    updateOfertaPrecoUnitario();
+};
 
 const fetchProdutos = async () => {
     const response = await fetch('/api/produtos.json');
@@ -368,41 +448,50 @@ const formatCurrency = (value) => {
 };
 
 const updateDescontoReais = () => {
-    descontoReais.value = ((precoTabletTotal.value * descontoPercentual.value) / 100).toFixed(2);
+    ofertaDescontoReais.value = ((precoTabletTotal.value * ofertaDescontoPercentual.value) / 100).toFixed(2);
     updateFlexRca();
 };
 
-const updateDescontoPercentual = () => {
-    if (descontoReais.value > 0) {
-        descontoPercentual.value = ((descontoReais.value / precoTabletTotal.value) * 100).toFixed(2);
-    } else {
-        descontoPercentual.value = 0;
+const updateOfertaPrecoUnitario = () => {
+    ofertaPrecoUnitario.value = produto.value.precoUnitario - (ofertaDescontoPercentual.value / 100 * produto.value.precoUnitario);
+    updateDescontoReais();
+};
+const updateOfertaDescontoPercentual = () => {
+    let value = -((ofertaPrecoUnitario.value - produto.value.precoUnitario) / produto.value.precoUnitario) * 100;
+    ofertaDescontoPercentual.value = value.toFixed(2);
+    updateDescontoReais();
+};
+
+const updatePrecosAutorizados = () => {
+    if (!isLiberadoAlcione.value) {
+        precoAutorizadoAlcione.value = 0; // Set to zero if not checked
     }
     updateFlexRca();
 };
 
-const recalculateValues = () => {
-    updatePrecosAutorizados();
-    updateFlexRca();
-};
-
-const updatePrecosAutorizados = () => {
-    updateFlexRca();
-};
-
 const updateFlexRca = () => {
-    const diff = precoAutorizadoTotal.value - precoSugeridoTotal.value;
+    const diff = precoAutorizadoTotal.value - ofertaPrecoTotal.value;
     flexRca.value = diff > 0 ? diff : 0;
 };
 
 // Observadores para atualizar FLEX/RCA quando os valores relevantes mudarem
-watch([rca, descontoPercentual, descontoReais, produto, quantidade, precoAutorizadoAlcione], updateFlexRca);
+watch([rca, ofertaDescontoPercentual, ofertaDescontoReais, produto, quantidade, precoAutorizadoAlcione], updateFlexRca);
+
+const isValid = computed(() => {
+    return !!rca.value &&
+        !!ofertaPrecoUnitario.value &&
+        !!ofertaDescontoPercentual.value &&
+        !!produto.value.codigo &&
+        !!quantidade.value &&
+        !!precoTabletUnitario.value &&
+        ofertaDescontoReais.value >= 35; // Ensure ofertaDescontoReais is at least 35
+});
 
 const whatsAppMessage = computed(() => {
     const formatarLista = (lista) => lista.join(' / ');
     const formatarValor = (valor) => valor || '-';
     const formatarPrecoSugerido = () => {
-        const precoUnidade = precoSugeridoUnidade.value || 0;
+        const precoUnidade = ofertaPrecoUnitario.value || 0;
         const precoCx = precoSugeridoCx.value || 0;
         const precoFormatadoUnidade = formatCurrency(precoUnidade);
         const precoFormatadoCx = formatCurrency(precoCx);
@@ -428,22 +517,13 @@ const whatsAppMessage = computed(() => {
     return message;
 });
 
-const isValid = computed(() => {
-    return !!rca.value &&
-        !!precoSugeridoUnidade.value &&
-        !!descontoPercentual.value &&
-        !!produto.value.codigo &&
-        !!quantidade.value &&
-        !!precoTabletUnitario.value;
-});
-
 const sendOrder = () => {
     if (isValid.value) {
         const phone = import.meta.env.MODE === 'development' ? '5554996132844' : '5554999256258';
         const link = `https://api.whatsapp.com/send?phone=${phone}&text=${encodeURIComponent(whatsAppMessage.value)}`;
         window.open(link, '_new');
     } else {
-        alert('Preencha todos os campos');
+        alert('Preencha todos os campos e o desconto deve ser maior ou igual a R$ 35,00');
     }
 };
 </script>

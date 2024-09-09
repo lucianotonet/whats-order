@@ -1,5 +1,5 @@
 <template>
-    <div class="flex h-full min-h-dvh bg-stone-500/5 bg-opacity-5">
+    <div class="flex h-full min-h-dvh bg-yellow-500/5 bg-opacity-5">
         <NuxtPage />
     </div>
 </template>

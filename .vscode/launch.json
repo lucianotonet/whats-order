@@ -19,14 +19,32 @@
             "args": [
                 "dev"
             ],
+        },
+        {
+            "type": "php",
+            "request": "launch",
+            "name": "PHP: Servidor Embutido",
+            "runtimeArgs": [
+                "-S",
+                "localhost:8000",
+                "-t",
+                "${workspaceFolder}/public"
+            ],
+            "port": 9003,
+            "serverReadyAction": {
+                "action": "openExternally",
+                "pattern": "Development Server \\(http://localhost:8000\\) started",
+                "uriFormat": "http://localhost:8000"
+            }
         }
     ],
     "compounds": [
         {
-            "name": "fullstack: nuxt",
+            "name": "Nuxt + PHP + Edge",
             "configurations": [
                 "server: nuxt",
-                "client: msedge"
+                "client: msedge",
+                "PHP: Servidor Embutido"
             ]
         }
     ]
