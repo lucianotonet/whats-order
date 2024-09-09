@@ -63,6 +63,12 @@
                     </svg>
                 </button>
             </div>
+            <button @click="deleteClientes" class="cursor-pointer border items-center py-2 px-4 rounded-md shadow h-12 bg-red-600 text-white flex gap-2">
+                Excluir Clientes
+            </button>
+            <button @click="deleteProdutos" class="cursor-pointer border items-center py-2 px-4 rounded-md shadow h-12 bg-red-600 text-white flex gap-2">
+                Excluir Produtos
+            </button>
         </div>
     </div>    
 </template>
@@ -138,5 +144,17 @@ const handleFileUpload = async (type) => {
     // Limpar os inputs após o upload
     clientesInputFile.value = null;
     produtosInputFile.value = null;
+};
+
+const deleteClientes = async () => {
+    await store.deleteData('clientes');
+    message.value = 'Clientes excluídos com sucesso.';
+    success.value = true;
+};
+
+const deleteProdutos = async () => {
+    await store.deleteData('produtos');
+    message.value = 'Produtos excluídos com sucesso.';
+    success.value = true;
 };
 </script>

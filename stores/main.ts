@@ -21,7 +21,7 @@ export const useMainStore = defineStore('main', {
   }),
   actions: {
     async loadClientes() {
-      const response = await fetch('/clientes.json');
+      const response = await fetch('/api/clientes.json');
       if (response.ok) {
         this.clientes = await response.json();
       } else {
@@ -29,7 +29,7 @@ export const useMainStore = defineStore('main', {
       }
     },
     async loadProdutos() {
-      const response = await fetch('/produtos.json');
+      const response = await fetch('/api/produtos.json');
       if (response.ok) {
         this.produtos = await response.json();
       } else {
@@ -46,7 +46,7 @@ export const useMainStore = defineStore('main', {
     },
     async saveDataToServer(type: string, data: any) {
       try {
-        const response = await fetch('/upload.php', { // Alterado para o script PHP
+        const response = await fetch('/api/index.php', { // Alterado para o script PHP
           method: 'POST',
           headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
@@ -59,6 +59,23 @@ export const useMainStore = defineStore('main', {
         }
       } catch (error) {
         console.error('Erro ao salvar os dados:', error);
+      }
+    },
+    async deleteData(type: string) { // Novo método para exclusão
+      try {
+        const response = await fetch('/api/index.php', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          body: new URLSearchParams({ type, action: 'delete' }), // Enviando a ação de exclusão
+        });
+        const result = await response.json();
+        if (!result.success) {
+          throw new Error('Falha ao excluir os dados no servidor');
+        }
+      } catch (error) {
+        console.error('Erro ao excluir os dados:', error);
       }
     },
     searchClientes(term: string): Cliente[] {

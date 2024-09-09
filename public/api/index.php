@@ -6,6 +6,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $filePath = __DIR__ . "/{$type}.json";
 
+    if (isset($_POST['action']) && $_POST['action'] === 'delete') { // Nova condição para exclusão
+        if (file_exists($filePath)) {
+            unlink($filePath);
+            echo json_encode(['success' => true, 'message' => 'Arquivo excluído com sucesso.']);
+        } else {
+            echo json_encode(['success' => false, 'message' => 'Arquivo não encontrado.']);
+        }
+        exit; // Para evitar a execução do restante do código
+    }
+
     if (is_string($data)) {
         $data = json_decode($data, true);
         if (json_last_error() === JSON_ERROR_NONE) {
