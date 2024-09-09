@@ -1,29 +1,27 @@
 #!/bin/bash
 
-# Settings
-DATE_FORMAT="%d/%m/%Y %H:%M"
+# Configurações
 CHANGELOG_FILE="CHANGELOG.md"
 TEMP_FILE="temp_changelog.md"
-JSON_FILE="temp_changelog.json"
 
-# Check if Git is installed
+# Verifica se o Git está instalado
 if ! command -v git &> /dev/null; then
     echo "Error: Git não está instalado."
     exit 1
 fi
 
-# Check if write permission is available
+# Verifica se há permissão de escrita
 if [ ! -w "$CHANGELOG_FILE" ]; then
     echo "Error: Permissão negada para escrever no $CHANGELOG_FILE."
     exit 1
 fi
 
-# Initialize the temporary Changelog file
+# Inicializa o arquivo temporário do Changelog
 echo "# Changelog" > "$TEMP_FILE"
 
-# Include all commits in the repository with refined formatting
+# Gera o changelog baseado nos commits do histórico no GitHub
 git log --pretty=format:"
-_[%ad](%H)_
+_[%ad](https://github.com/lucianotonet/whats-order/commits/%H)_
 ### %s
 
 %b
