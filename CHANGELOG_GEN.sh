@@ -27,8 +27,6 @@ _[%ad](%H)_
 ### %s
 
 %b
-
----
 " --date=format:"%d/%m/%Y %H:%M" HEAD >> "$TEMP_FILE"
 
 # Atualiza o arquivo Changelog com o temporário
