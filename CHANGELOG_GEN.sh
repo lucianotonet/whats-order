@@ -3,13 +3,10 @@
 # Configurações
 CHANGELOG_FILE="CHANGELOG.md"
 TEMP_FILE="temp_changelog.md"
-REPO_OWNER="lucianotonet"
-REPO_NAME="whats-order"
-GITHUB_API="https://api.github.com"
 
-# Verifica se o curl está instalado
-if ! command -v curl &> /dev/null; then
-    echo "Error: curl não está instalado."
+# Verifica se o Git está instalado
+if ! command -v git &> /dev/null; then
+    echo "Error: Git não está instalado."
     exit 1
 fi
 
@@ -22,18 +19,13 @@ fi
 # Inicializa o arquivo temporário do Changelog
 echo "# Changelog" > "$TEMP_FILE"
 
-# Função para obter commits do GitHub
-get_commits() {
-    curl -s "${GITHUB_API}/repos/${REPO_OWNER}/${REPO_NAME}/commits" | \
-    jq -r '.[] | "
+# Gera o changelog baseado nos commits do histórico no GitHub
+git log --pretty=format:"
+_[%ad](https://github.com/lucianotonet/whats-order/commits/%H)_
+### %s
 
-_[" + (.commit.author.date | split("T")[0] | split("-") | reverse | join("/")) + " " + (.commit.author.date | split("T")[1] | split("Z")[0]) + "](https://github.com/'${REPO_OWNER}'/'${REPO_NAME}'/commits/" + .sha + ")_
-### " + .commit.message + "
-"'
-}
-
-# Gera o changelog baseado nos commits do GitHub
-get_commits >> "$TEMP_FILE"
+%b
+" --date=format:"%d/%m/%Y %H:%M" HEAD >> "$TEMP_FILE"
 
 # Atualiza o arquivo Changelog com o temporário
 if mv "$TEMP_FILE" "$CHANGELOG_FILE"; then
