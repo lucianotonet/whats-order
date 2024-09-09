@@ -18,22 +18,38 @@ export const useMainStore = defineStore('main', {
   state: () => ({
     clientes: [] as Cliente[],
     produtos: [] as Produto[],
+    loadingClientes: false,
+    loadingProdutos: false,
   }),
   actions: {
     async loadClientes() {
-      const response = await fetch('/api/clientes.json');
-      if (response.ok) {
-        this.clientes = await response.json();
-      } else {
-        console.warn('Arquivo de clientes não encontrado.');
+      this.loadingClientes = true;
+      try {
+        const response = await fetch('/api/clientes.json');
+        if (response.ok) {
+          this.clientes = await response.json();
+        } else {
+          console.warn('Arquivo de clientes não encontrado.');
+        }
+      } catch (error) {
+        console.error('Erro ao carregar clientes:', error);
+      } finally {
+        this.loadingClientes = false;
       }
     },
     async loadProdutos() {
-      const response = await fetch('/api/produtos.json');
-      if (response.ok) {
-        this.produtos = await response.json();
-      } else {
-        console.warn('Arquivo de produtos não encontrado.');
+      this.loadingProdutos = true;
+      try {
+        const response = await fetch('/api/produtos.json');
+        if (response.ok) {
+          this.produtos = await response.json();
+        } else {
+          console.warn('Arquivo de produtos não encontrado.');
+        }
+      } catch (error) {
+        console.error('Erro ao carregar produtos:', error);
+      } finally {
+        this.loadingProdutos = false;
       }
     },
     async setClientes(clientes: Cliente[]) {

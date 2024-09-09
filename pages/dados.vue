@@ -26,14 +26,16 @@
         <!-- Informações rápidas -->
         <div class="bg-gray-100 p-4 rounded-lg mb-8 flex flex-col gap-2">
             <h2 class="text-xl font-bold mb-2">Informações do Sistema</h2>
-            <p class="text-gray-700 w-full flex">Total de Clientes: <span class="ml-2 font-semibold">{{
-            store.totalClientes || 0
-        }}</span>
+            <p class="text-gray-700 w-full flex">
+                Total de Clientes: 
+                <span v-if="store.loadingClientes" class="ml-2 text-blue-500">Carregando...</span>
+                <span v-else class="ml-2 font-semibold">{{ store.totalClientes || 0 }}</span>
                 <button @click="deleteClientes" class="ml-auto cursor-pointer text-red-500">Excluir</button>
             </p>
-            <p class="text-gray-700 w-full flex">Total de Produtos: <span class="ml-2 font-semibold">{{
-            store.totalProdutos || 0
-        }}</span>
+            <p class="text-gray-700 w-full flex">
+                Total de Produtos: 
+                <span v-if="store.loadingProdutos" class="ml-2 text-blue-500">Carregando...</span>
+                <span v-else class="ml-2 font-semibold">{{ store.totalProdutos || 0 }}</span>
                 <button @click="deleteProdutos" class="ml-auto cursor-pointer text-red-500">Excluir</button>
             </p>
         </div>
