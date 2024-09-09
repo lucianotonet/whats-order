@@ -31,8 +31,15 @@ _[%ad](%H)_
 ---
 " --date=format:"%d/%m/%Y %H:%M" HEAD >> "$TEMP_FILE"
 
-# Replace the Changelog file with the temporary one
-mv "$TEMP_FILE" "$CHANGELOG_FILE"
-cp "$CHANGELOG_FILE" "/public/$CHANGELOG_FILE"
+# Atualiza o arquivo Changelog com o temporário
+if mv "$TEMP_FILE" "$CHANGELOG_FILE"; then
+    if ! cp "$CHANGELOG_FILE" "/public/$CHANGELOG_FILE"; then
+        echo "Error: Falha ao copiar $CHANGELOG_FILE para /public/."
+        exit 1
+    fi
+else
+    echo "Error: Falha ao mover $TEMP_FILE para $CHANGELOG_FILE."
+    exit 1
+fi
 
 echo "Changelog atualizado com sucesso!"
