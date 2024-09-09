@@ -23,5 +23,6 @@ logs
 .env.*
 !.env.example
 
-public/produtos.json
-public/clientes.json
+public/api/produtos.json
+public/api/clientes.json
+public/api/version.json
