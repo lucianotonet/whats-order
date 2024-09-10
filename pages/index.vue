@@ -26,7 +26,7 @@
                         <div class="flex flex-col w-full md:w-1/6">
                             <label class="text-xs uppercase opacity-75" for="codigoCliente">Código</label>
                             <input required v-model="cliente.codigo"
-                                class="rounded shadow-inner border border-black px-2 py-1" type="number"
+                                class="rounded shadow-inner border border-black px-2 py-1" type="text"
                                 @input="handleClienteInput(cliente.codigo)">
                             <datalist id="clienteList">
                                 <option v-for="cliente in filteredClientes" :key="cliente.codigo"
@@ -57,7 +57,7 @@
                         <div class="flex flex-col w-full md:w-2/12">
                             <label class="text-xs uppercase opacity-75" for="codigoProduto">Código</label>
                             <input required v-model="produto.codigo"
-                                class="rounded shadow-inner border border-black px-2 py-1" type="number"
+                                class="rounded shadow-inner border border-black px-2 py-1" type="text"
                                 @input="handleProdutoInput(produto.codigo)">
                             <datalist id="produtoList">
                                 <option v-for="item in filteredProdutos" :key="item.codigo" :value="item.codigo" />
@@ -91,7 +91,7 @@
                         <div class="flex flex-col w-full md:w-1/12">
                             <label class="text-xs uppercase opacity-75" for="quantidade">Quantidade</label>
                             <input required v-model="quantidade"
-                                class="w-full rounded shadow-inner border border-black px-2 py-1" type="number"
+                                class="w-full rounded shadow-inner border border-black px-2 py-1" type="text"
                                 name="quantidade" id="quantidade" @input="recalculateValues">
                         </div>
                     </div>
@@ -199,34 +199,34 @@
                             <div class="flex flex-col w-full">
                                 <label class="text-xs uppercase opacity-75 text-center">OFERTA</label>
                                 <div class="flex justify-center items-center gap-4">
-                                    <p required class="font-mono w-full text-right" name="ofertaPrecoUnitario"
-                                        id="ofertaPrecoUnitario" readonly>{{
+                                    <p required class="font-mono w-full text-right" type="text"
+                                        name="ofertaPrecoUnitario" id="ofertaPrecoUnitario" readonly>{{
                 formatCurrency(ofertaPrecoUnitario) }}</p>
                                     <small class="w-full text-left uppercase opacity-75">Un.</small>
                                 </div>
 
                                 <div class="flex justify-center items-center gap-4">
-                                    <p required class="font-mono w-full text-right" name="precoSugeridoCx"
+                                    <p required class="font-mono w-full text-right" type="text" name="precoSugeridoCx"
                                         id="precoSugeridoCx" readonly>{{ formatCurrency(precoSugeridoCx) }}</p>
                                     <small class="w-full text-left uppercase opacity-75">Cx.</small>
                                 </div>
 
                                 <div class="flex justify-center items-center gap-4">
-                                    <p required class="font-mono w-full text-right" name="ofertaPrecoTotal"
+                                    <p required class="font-mono w-full text-right" type="text" name="ofertaPrecoTotal"
                                         id="ofertaPrecoTotal" readonly>{{
                 formatCurrency(ofertaPrecoTotal) }}</p>
                                     <small class="w-full text-left uppercase opacity-75">Total</small>
                                 </div>
 
                                 <div class="flex justify-center items-center gap-4">
-                                    <p required class="font-mono w-full text-right" name="flexRca" id="flexRca"
-                                        readonly>{{ formatCurrency(flexRca) }}</p>
+                                    <p required class="font-mono w-full text-right" type="text" name="flexRca"
+                                        id="flexRca" readonly>{{ formatCurrency(flexRca) }}</p>
                                     <small class="w-full text-left uppercase opacity-75">FLEX/RCA</small>
                                 </div>
 
                                 <div class="flex justify-center items-center gap-4 mt-2">
-                                    <p required class="font-mono w-full text-right" name="ofertaDescontoReais"
-                                        id="ofertaDescontoReais" readonly
+                                    <p required class="font-mono w-full text-right" type="text"
+                                        name="ofertaDescontoReais" id="ofertaDescontoReais" readonly
                                         :class="{ 'text-red-500': ofertaDescontoReais < 35 }">
                                         {{ formatCurrency(ofertaDescontoReais) }}
                                     </p>
@@ -239,21 +239,21 @@
                             <div v-if="isLiberadoAlcione" class="flex flex-col w-full">
                                 <label class="text-xs uppercase opacity-75 text-center">AUTORIZADO</label>
                                 <div class="flex justify-center items-center gap-4">
-                                    <p required class="font-mono w-full text-right" name="precoAutorizadoUnidade"
-                                        id="precoAutorizadoUnidade" readonly>{{
+                                    <p required class="font-mono w-full text-right" type="text"
+                                        name="precoAutorizadoUnidade" id="precoAutorizadoUnidade" readonly>{{
                 formatCurrency(precoAutorizadoUnidade) }}</p>
                                     <small class="w-full text-left uppercase opacity-75">Un.</small>
                                 </div>
 
                                 <div class="flex justify-center items-center gap-4">
-                                    <p required class="font-mono w-full text-right" name="precoAutorizadoCx"
+                                    <p required class="font-mono w-full text-right" type="text" name="precoAutorizadoCx"
                                         id="precoAutorizadoCx" readonly>{{ formatCurrency(precoAutorizadoCx) }}</p>
                                     <small class="w-full text-left uppercase opacity-75">Cx.</small>
                                 </div>
 
                                 <div class="flex justify-center items-center gap-4">
-                                    <p required class="font-mono w-full text-right" name="precoAutorizadoTotal"
-                                        id="precoAutorizadoTotal" readonly>{{
+                                    <p required class="font-mono w-full text-right" type="text"
+                                        name="precoAutorizadoTotal" id="precoAutorizadoTotal" readonly>{{
                                         formatCurrency(precoAutorizadoTotal) }}</p>
                                     <small class="w-full text-left uppercase opacity-75">Total</small>
                                 </div>
@@ -270,7 +270,7 @@
 
                 </div>
             </form>
-
+            
             <AppFooter />
         </div>
     </div>
